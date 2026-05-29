@@ -1,1 +1,333 @@
-
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# 📐 Chapter 2: Vectors (Vektor)\n",
+    "\n",
+    "---\n",
+    "\n",
+    "## 2.1 Apa itu Vektor?\n",
+    "\n",
+    "Dalam *Data Science*, vektor adalah entitas yang sangat fundamental. Kita dapat memandang vektor dari dua perspektif yang berbeda namun saling melengkapi:\n",
+    "- **Perspektif Aljabar (Kompustasional):** Vektor hanyalah daftar angka yang berurutan (array 1D). Setiap angka dalam daftar tersebut mewakili sebuah fitur atau dimensi. Misalnya, vektor `[ketinggian, berat, usia]` dari seorang pasien.\n",
+    "- **Perspektif Geometris (Visual):** Vektor adalah garis lurus yang memiliki **panjang (magnitude)** dan **arah (direction)** yang berawal dari titik asal koordinat (origin `[0,0]`) dan berujung pada koordinat yang ditentukan oleh daftar angka tersebut.\n",
+    "\n",
+    "Bab ini akan membahas operasi matematika yang dapat kita lakukan pada vektor dan bagaimana operasi tersebut divisualisasikan."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt\n",
+    "\n",
+    "%matplotlib inline\n",
+    "print(\"Library berhasil dimuat.\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2.2 Penjumlahan Vektor (Vector Addition)\n",
+    "\n",
+    "Menjumlahkan dua vektor secara aljabar sangatlah sederhana: kita menjumlahkan elemen-elemen yang berada pada posisi yang sama (*element-wise*). Syarat mutlaknya: **kedua vektor harus memiliki dimensi (panjang) yang sama**.\n",
+    "\n",
+    "Secara geometris, penjumlahan vektor divisualisasikan dengan metode **Head-to-Tail**. Jika kita ingin menjumlahkan $v + w$, kita menggambar vektor $v$ terlebih dahulu, kemudian kita meletakkan pangkal (tail) dari vektor $w$ tepat di ujung (head) dari vektor $v$. Hasilnya adalah vektor baru yang ditarik dari titik asal ke ujung vektor $w$ yang baru."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Mendefinisikan dua vektor\n",
+    "v1 = np.array([3, -1])\n",
+    "v2 = np.array([2, 4])\n",
+    "\n",
+    "# Penjumlahan aljabar\n",
+    "v3 = v1 + v2\n",
+    "print(\"v1:\", v1)\n",
+    "print(\"v2:\", v2)\n",
+    "print(\"v1 + v2:\", v3)\n",
+    "\n",
+    "# Visualisasi Geometris (Metode Head-to-Tail)\n",
+    "plt.figure(figsize=(6, 6))\n",
+    "\n",
+    "# Menggambar vektor v1\n",
+    "plt.arrow(0, 0, v1[0], v1[1], head_width=0.3, width=0.05, color='blue', length_includes_head=True, label='v1')\n",
+    "# Menggambar vektor v2 dimulai dari UJUNG v1\n",
+    "plt.arrow(v1[0], v1[1], v2[0], v2[1], head_width=0.3, width=0.05, color='green', length_includes_head=True, label='v2 (shifted)')\n",
+    "# Menggambar vektor hasil v3 (Resultan)\n",
+    "plt.arrow(0, 0, v3[0], v3[1], head_width=0.3, width=0.05, color='red', length_includes_head=True, label='v1 + v2')\n",
+    "\n",
+    "plt.xlim(-1, 6)\n",
+    "plt.ylim(-2, 6)\n",
+    "plt.axhline(0, color='gray', linestyle='--')\n",
+    "plt.axvline(0, color='gray', linestyle='--')\n",
+    "plt.grid(alpha=0.4)\n",
+    "plt.legend()\n",
+    "plt.title('Visualisasi Penjumlahan Vektor (Head-to-Tail)')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2.3 Perkalian Skalar (Scalar-Vector Multiplication)\n",
+    "\n",
+    "Skalar hanyalah sebuah angka tunggal (seperti 2, -1.5, atau 0). Mengalikan skalar dengan vektor berarti mengalikan setiap elemen di dalam vektor tersebut dengan angka skalar itu.\n",
+    "\n",
+    "Secara geometris, perkalian skalar tidak mengubah \"garis arah\" dasar dari vektor, ia hanya melakukan **Scaling** (Peregangan / Penyusutan):\n",
+    "- Skalar $> 1$: Memperpanjang vektor.\n",
+    "- Skalar di antara $0$ dan $1$: Memperpendek vektor.\n",
+    "- Skalar $< 0$ (Negatif): Membalikkan arah vektor 180 derajat."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "v = np.array([2, 1.5])\n",
+    "s1 = 2      # Meregangkan 2x lipat\n",
+    "s2 = -0.5   # Memendekkan dan membalik arah\n",
+    "\n",
+    "plt.figure(figsize=(6, 6))\n",
+    "plt.plot([0, v[0]], [0, v[1]], 'b', label='v asli', linewidth=2)\n",
+    "plt.plot([0, s1*v[0]], [0, s1*v[1]], 'r--', label='2 * v', linewidth=2)\n",
+    "plt.plot([0, s2*v[0]], [0, s2*v[1]], 'g-.', label='-0.5 * v', linewidth=2)\n",
+    "\n",
+    "plt.xlim(-2, 5)\n",
+    "plt.ylim(-2, 5)\n",
+    "plt.axhline(0, color='gray', linestyle='--')\n",
+    "plt.axvline(0, color='gray', linestyle='--')\n",
+    "plt.grid(alpha=0.4)\n",
+    "plt.legend()\n",
+    "plt.title('Perkalian Skalar pada Vektor')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2.4 Vector-Vector Multiplication: The Dot Product\n",
+    "\n",
+    "Dari semua operasi vektor, **Dot Product** (Produk Titik) adalah yang paling penting. Dot product mengambil dua vektor dan mengembalikan **Satu Angka Skalar Tunggal**.\n",
+    "\n",
+    "**Cara Menghitung (Aljabar):**\n",
+    "Kita mengalikan elemen-elemen yang bersesuaian, lalu menjumlahkan semua hasil kali tersebut.\n",
+    "$\n",
+    "a \\cdot b = \n",
+    "\\begin{bmatrix} a_1 \\\\ a_2 \\end{bmatrix}\n",
+    "\\cdot \n",
+    "\\begin{bmatrix} b_1 \\\\ b_2 \\end{bmatrix} \n",
+    "= a_1 b_1 + a_2 b_2\n",
+    "$\n",
+    "\n",
+    "*Mengapa ini penting?* Dot product adalah dasar dari perhitungan korelasi statistik, filtering sinyal, layer di *Deep Learning*, dan pengukuran kesamaan antar dokumen (seperti metrik *Cosine Similarity*)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "v1 = np.array([1, 2, 3, 4])\n",
+    "v2 = np.array([0, -1, 2, -2])\n",
+    "\n",
+    "# Di Python/NumPy, ada banyak cara untuk menghitung Dot Product:\n",
+    "\n",
+    "# Metode 1: Menggunakan fungsi np.dot() (Paling direkomendasikan)\n",
+    "dp1 = np.dot(v1, v2)\n",
+    "\n",
+    "# Metode 2: Menggunakan operator '@' (Python 3.5+)\n",
+    "dp2 = v1 @ v2\n",
+    "\n",
+    "# Metode 3: Mengalikan element-wise lalu di-sum (Sesuai rumus aljabar aslinya)\n",
+    "dp3 = np.sum(v1 * v2)\n",
+    "\n",
+    "print(\"Hasil Metode 1 (np.dot) :\", dp1)\n",
+    "print(\"Hasil Metode 2 (@)      :\", dp2)\n",
+    "print(\"Hasil Metode 3 (sum)    :\", dp3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2.5 Hadamard Multiplication (Perkalian Element-wise)\n",
+    "\n",
+    "Penting untuk tidak menyamakan *Dot Product* dengan perkalian elemen per elemen (Hadamard Product). Perkalian Hadamard akan mengembalikan sebuah **vektor baru**, bukan skalar tunggal. Ini sering dipakai untuk masking atau filtering data."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "v1 = np.array([5, 4, 8, 2])\n",
+    "v2 = np.array([1, 0, 0.5, -1])\n",
+    "\n",
+    "hadamard = v1 * v2\n",
+    "print(\"Vektor 1            :\", v1)\n",
+    "print(\"Vektor 2            :\", v2)\n",
+    "print(\"Hadamard Product    :\", hadamard)\n",
+    "print(\"(Bandingkan dengan) Dot Product:\", np.dot(v1, v2))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2.6 Vector Norm (Panjang Vektor) dan Vektor Satuan\n",
+    "\n",
+    "**Norm** (ditulis $||v||$) adalah panjang garis geometris dari sebuah vektor. Kita menghitungnya menggunakan Teorema Pythagoras (mengkuadratkan tiap elemen, menjumlahkannya, lalu diakarkan). Di *Machine Learning*, ini dikenal sebagai $L2\\text{-}Norm$.\n",
+    "\n",
+    "**Vektor Satuan (Unit Vector)** adalah vektor yang arahnya tetap sama, tetapi panjangnya diubah menjadi persis 1. Kita mendapatkannya dengan membagi vektor tersebut dengan *Norm*-nya sendiri."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "v = np.array([3, 4]) # Berdasarkan tripel Pythagoras, panjangnya harus 5\n",
+    "\n",
+    "# Menghitung L2-Norm menggunakan numpy.linalg\n",
+    "v_norm = np.linalg.norm(v)\n",
+    "print(f\"Vektor v = {v}\")\n",
+    "print(f\"Panjang (Norm) dari v = {v_norm}\")\n",
+    "\n",
+    "# Membuat Unit Vector (Membagi dengan skalar norm)\n",
+    "v_unit = v / v_norm\n",
+    "print(f\"\\nUnit Vector dari v = {v_unit}\")\n",
+    "print(f\"Mari kita uji panjang Unit Vector: {np.linalg.norm(v_unit)}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2.7 Perspektif Geometris dari Dot Product: Kosinus Sudut\n",
+    "\n",
+    "Secara geometris, *Dot Product* mengukur seberapa sejajar dua vektor. Rumusnya melibatkan kosinus sudut di antara keduanya:\n",
+    "$$ a \\cdot b = ||a|| \\, ||b|| \\cos(\\theta) $$\n",
+    "\n",
+    "Oleh karena itu, kita bisa memanipulasi rumus ini untuk mencari sudut $\\theta$ di antara dua vektor:\n",
+    "$$ \\theta = \\arccos\\left( \\frac{a \\cdot b}{||a|| \\, ||b||} \\right) $$"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def calculate_angle(v1, v2):\n",
+    "    # Hitung dot product\n",
+    "    dot_prod = np.dot(v1, v2)\n",
+    "    \n",
+    "    # Hitung norm masing-masing\n",
+    "    norm_v1 = np.linalg.norm(v1)\n",
+    "    norm_v2 = np.linalg.norm(v2)\n",
+    "    \n",
+    "    # Hitung cos theta\n",
+    "    cos_theta = dot_prod / (norm_v1 * norm_v2)\n",
+    "    \n",
+    "    # Gunakan arccos untuk mencari radian, lalu konversi ke derajat\n",
+    "    angle_rad = np.arccos(cos_theta)\n",
+    "    angle_deg = np.rad2deg(angle_rad)\n",
+    "    \n",
+    "    return angle_deg\n",
+    "\n",
+    "v_a = np.array([1, 0])\n",
+    "v_b = np.array([1, 1])\n",
+    "\n",
+    "print(f\"Sudut antara {v_a} dan {v_b} adalah: {calculate_angle(v_a, v_b):.2f} derajat\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2.8 Orthogonality (Tegak Lurus)\n",
+    "\n",
+    "Dua vektor disebut **Orthogonal** jika mereka membentuk sudut tepat 90 derajat. \n",
+    "Berdasarkan rumus kosinus sebelumnya, karena $\\cos(90^\\circ) = 0$, maka **Dot Product dari dua vektor yang saling orthogonal PASTI bernilai 0**. Ini adalah sifat yang sangat berharga dalam algoritma seperti *Principal Component Analysis (PCA)* di mana kita ingin mencari sumbu/dimensi yang tidak saling tumpang tindih informasinya."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Membuat dua vektor yang tegak lurus\n",
+    "v1 = np.array([2, 2])\n",
+    "v2 = np.array([-2, 2])\n",
+    "\n",
+    "dot_product = np.dot(v1, v2)\n",
+    "print(f\"Dot Product dari {v1} dan {v2} = {dot_product}\")\n",
+    "\n",
+    "plt.figure(figsize=(5, 5))\n",
+    "plt.arrow(0, 0, v1[0], v1[1], head_width=0.2, color='blue', label='v1')\n",
+    "plt.arrow(0, 0, v2[0], v2[1], head_width=0.2, color='red', label='v2')\n",
+    "\n",
+    "plt.xlim(-3, 3)\n",
+    "plt.ylim(0, 4)\n",
+    "plt.axhline(0, color='gray', linestyle='--')\n",
+    "plt.axvline(0, color='gray', linestyle='--')\n",
+    "plt.grid(alpha=0.4)\n",
+    "plt.legend()\n",
+    "plt.title(f'Vektor Orthogonal (Dot Product = {dot_product})')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2.9 Kesimpulan Bab\n",
+    "\n",
+    "Pada bab ini, kita telah belajar bahwa:\n",
+    "1. Penjumlahan vektor menggabungkan arah (Head-to-tail).\n",
+    "2. Skalar merubah skala/panjang vektor tanpa memutar arah aslinya.\n",
+    "3. **Dot Product** adalah pengukur kesamaan (sejauh mana kedua vektor menunjuk ke arah yang sama). Jika hasilnya 0, mereka sepenuhnya tidak tumpang tindih (orthogonal)."
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
